@@ -1,3 +1,9 @@
+import {
+  ProductMobileSlideshow,
+  ProductSlideshow,
+  QuantitySelector,
+  SizeSelector,
+} from "@/components";
 import { titleFont } from "@/config/fonts";
 import { initialData } from "@/seed/seed";
 import { notFound } from "next/navigation";
@@ -10,34 +16,47 @@ interface ProductPageProps {
 
 export default function ProductPageSlug({ params }: ProductPageProps) {
   const { slug } = params;
-  const products = initialData.products.find(
-    (product) => product.slug === slug
-  );
-  if (!products) {
+  const product = initialData.products.find((product) => product.slug === slug);
+  if (!product) {
     notFound();
   }
   return (
     <div className="mt-5 mb-20 grid grid-cols-1 md:grid-cols-3 gap-3">
       {/** SlideShow */}
       <div className="col-span-1  md:col-span-2">
-        <h1>Hola mundo</h1>
+        {/** Mobile Slideshow  */}
+        <ProductMobileSlideshow
+          className="md:hidden block"
+          title={product.title}
+          images={product.images}
+        />
+        {/** Desktop Slideshow  */}
+        <ProductSlideshow
+          className="hidden md:block"
+          title={product.title}
+          images={product.images}
+        />
       </div>
       {/** Detail */}
       <div className="col-span-1 px-5">
         <h1 className={`${titleFont.className} antialiased font-bold text-xl`}>
-          {products.title}
+          {product.title}
         </h1>
-        <p className="text-lg mb-5">{products.price}</p>
+        <p className="text-lg mb-5">{product.price}</p>
 
         {/** Selector de tallas */}
-
+        <SizeSelector
+          selectedSize={product.sizes[0]}
+          avaibleSizes={product.sizes}
+        />
         {/** Selector de cantidad */}
+        <QuantitySelector quantity={3} />
 
         <button className="btn-primary my-5">Agregar al carrito</button>
 
         {/** Descripcion */}
         <h3 className="font-bold text-sm "> Descripción</h3>
-        <p className="font-light">{products.description}</p>
+        <p className="font-light">{product.description}</p>
       </div>
     </div>
   );
